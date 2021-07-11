@@ -12,10 +12,14 @@ strategy:
      imageName: 'windows-latest'
      cmakeArgs: '-G "Visual Studio 16 2019"'
      buildSystem : 'CMAKE'
+     sourceFolder: 'Native/Release'
+     sourceFile: 'mikktspace.dll'
    linux:
      imageName: 'ubuntu-latest'
      cmakeArgs: ''
      buildSystem : 'CMAKE'
+     sourceFolder: 'Native/'
+     sourceFile: 'libmikktspace.so'
    android:
      imageName: 'windows-latest'
      buildSystem : 'JNI'
@@ -57,3 +61,16 @@ steps:
       make
       tree
   condition: eq( variables['Agent.OS'], 'Linux' )
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(sourceFolder)'
+    Contents: '$(sourceFile)'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    CleanTargetFolder: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: '$(artifactName)'
+    publishLocation: 'Container'
