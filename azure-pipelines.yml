@@ -53,6 +53,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      cd Native
       make
       tree
   condition: eq( variables['Agent.OS'], 'Linux' )
