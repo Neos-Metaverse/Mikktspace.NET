@@ -111,21 +111,24 @@ stages:
         buildType: 'current'
         downloadType: 'single'
         artifactName: 'windows_x64'
-        downloadPath: 'CSharp/runtimes/win-x64'
+        itemPattern: 'windows_x64/**'
+        downloadPath: 'CSharp/runtimes/win-x64/native'
       
     - task: DownloadBuildArtifacts@1
       inputs:
         buildType: 'current'
         downloadType: 'single'
         artifactName: 'linux_x64'
-        downloadPath: 'CSharp/runtimes/linux-x64'
+        itemPattern: 'linux_x64/**'
+        downloadPath: 'CSharp/runtimes/linux-x64/native'
 
     - task: DownloadBuildArtifacts@1
       inputs:
         buildType: 'current'
         downloadType: 'single'
         artifactName: 'android_ARMv7'
-        downloadPath: 'CSharp/runtimes/android-arm'
+        itemPattern: 'android_ARMv7/**'
+        downloadPath: 'CSharp/runtimes/android-arm/native'
 
     - task: VSBuild@1
       inputs:
