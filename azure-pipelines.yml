@@ -106,6 +106,27 @@ stages:
       inputs:
         restoreSolution: 'CSharp\Mikktspace.NET.sln'
 
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'windows_x64'
+        downloadPath: 'CSharp/runtimes/win-x64'
+      
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'linux_x64'
+        downloadPath: 'CSharp/runtimes/linux-x64'
+
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'android_ARMv7'
+        downloadPath: 'CSharp/runtimes/android-arm'
+
     - task: VSBuild@1
       inputs:
         solution: 'CSharp\Mikktspace.NET.sln'
