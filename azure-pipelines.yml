@@ -32,7 +32,8 @@ steps:
 
 - task: CMake@1
   inputs:
-    cmakeArgs: $(cmakeArgs)
+    workingDirectory: 'Native/build'
+    cmakeArgs: 'Native/CMakeLists.txt $(cmakeArgs)'
   condition: eq( variables['buildSystem'], 'CMAKE' )
 
 - task: Bash@3
