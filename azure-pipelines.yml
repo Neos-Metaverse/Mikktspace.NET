@@ -36,6 +36,11 @@ steps:
     cmakeArgs: 'CMakeLists.txt $(cmakeArgs)'
   condition: eq( variables['buildSystem'], 'CMAKE' )
 
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: 'tree /F /A'
+    errorActionPreference: 'continue'
 - task: Bash@3
   inputs:
     targetType: 'inline'
