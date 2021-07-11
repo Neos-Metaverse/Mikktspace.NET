@@ -44,4 +44,7 @@ steps:
 - task: Bash@3
   inputs:
     targetType: 'inline'
-    script: 'tree -a'
+    script: |
+      make
+      tree
+  condition: eq( variables['Agent.OS'], 'Linux' )
