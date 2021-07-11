@@ -36,6 +36,13 @@ steps:
     cmakeArgs: 'CMakeLists.txt $(cmakeArgs)'
   condition: eq( variables['buildSystem'], 'CMAKE' )
 
+- task: VSBuild@1
+  inputs:
+    solution: 'Native\mikktspace.sln'
+    platform: 'x64'
+    msbuildArchitecture: 'x64'
+  condition: eq( variables['Agent.JobName'], 'Job windows' )
+
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
