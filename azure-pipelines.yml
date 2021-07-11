@@ -87,6 +87,13 @@ stages:
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         CleanTargetFolder: true
 
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          cd $(Build.ArtifactStagingDirectory)
+          tree /F /A'
+
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
@@ -111,7 +118,7 @@ stages:
         buildType: 'current'
         downloadType: 'single'
         artifactName: 'windows_x64'
-        itemPattern: 'windows_x64/**'
+        itemPattern: '**'
         downloadPath: 'CSharp/runtimes/win-x64/native'
       
     - task: DownloadBuildArtifacts@1
@@ -119,7 +126,7 @@ stages:
         buildType: 'current'
         downloadType: 'single'
         artifactName: 'linux_x64'
-        itemPattern: 'linux_x64/**'
+        itemPattern: '**'
         downloadPath: 'CSharp/runtimes/linux-x64/native'
 
     - task: DownloadBuildArtifacts@1
@@ -127,7 +134,7 @@ stages:
         buildType: 'current'
         downloadType: 'single'
         artifactName: 'android_ARMv7'
-        itemPattern: 'android_ARMv7/**'
+        itemPattern: '**'
         downloadPath: 'CSharp/runtimes/android-arm/native'
 
     - task: VSBuild@1
