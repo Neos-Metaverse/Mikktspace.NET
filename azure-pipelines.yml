@@ -40,6 +40,7 @@ steps:
   inputs:
     solution: 'Native\mikktspace.sln'
     platform: 'x64'
+    configuration: 'Release'
     msbuildArchitecture: 'x64'
   condition: eq( variables['Agent.JobName'], 'Job windows' )
 
