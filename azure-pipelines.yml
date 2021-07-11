@@ -8,86 +8,87 @@ trigger:
 
 stages:
 - stage: BuildNative
-  job: Build
-  strategy:
-  matrix:
-    windows:
-      imageName: 'windows-latest'
-      cmakeArgs: '-G "Visual Studio 16 2019"'
-      buildSystem : 'CMAKE'
-      sourceFolder: 'Native/Release'
-      sourceFile: 'mikktspace.dll'
-      artifactName : 'windows_x64'
-    linux:
-      imageName: 'ubuntu-latest'
-      cmakeArgs: ''
-      buildSystem : 'CMAKE'
-      sourceFolder: 'Native/'
-      sourceFile: 'libmikktspace.so'
-      artifactName : 'linux_x64'
-    android:
-      imageName: 'windows-latest'
-      buildSystem : 'JNI'
-      sourceFolder : 'Native/libs/armeabi-v7a'
-      sourceFile: 'libmikktspace.so'
-      artifactName : 'android_ARMv7'
+  jobs:
+  - job: Build
+    strategy:
+      matrix:
+        windows:
+          imageName: 'windows-latest'
+          cmakeArgs: '-G "Visual Studio 16 2019"'
+          buildSystem : 'CMAKE'
+          sourceFolder: 'Native/Release'
+          sourceFile: 'mikktspace.dll'
+          artifactName : 'windows_x64'
+        linux:
+          imageName: 'ubuntu-latest'
+          cmakeArgs: ''
+          buildSystem : 'CMAKE'
+          sourceFolder: 'Native/'
+          sourceFile: 'libmikktspace.so'
+          artifactName : 'linux_x64'
+        android:
+          imageName: 'windows-latest'
+          buildSystem : 'JNI'
+          sourceFolder : 'Native/libs/armeabi-v7a'
+          sourceFile: 'libmikktspace.so'
+          artifactName : 'android_ARMv7'
 
-  pool:
-    vmImage: $(imageName)
+    pool:
+      vmImage: $(imageName)
 
-  steps:
-  - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      script: 'choco install ninja'
-    condition: eq( variables['Agent.JobName'], 'Job android' )
+    steps:
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'choco install ninja'
+      condition: eq( variables['Agent.JobName'], 'Job android' )
 
-  - task: CMake@1
-    inputs:
-      workingDirectory: 'Native'
-      cmakeArgs: 'CMakeLists.txt $(cmakeArgs)'
-    condition: eq( variables['buildSystem'], 'CMAKE' )
+    - task: CMake@1
+      inputs:
+        workingDirectory: 'Native'
+        cmakeArgs: 'CMakeLists.txt $(cmakeArgs)'
+      condition: eq( variables['buildSystem'], 'CMAKE' )
 
-  - task: VSBuild@1
-    inputs:
-      solution: 'Native\mikktspace.sln'
-      platform: 'x64'
-      configuration: 'Release'
-      msbuildArchitecture: 'x64'
-    condition: eq( variables['Agent.JobName'], 'Job windows' )
+    - task: VSBuild@1
+      inputs:
+        solution: 'Native\mikktspace.sln'
+        platform: 'x64'
+        configuration: 'Release'
+        msbuildArchitecture: 'x64'
+      condition: eq( variables['Agent.JobName'], 'Job windows' )
 
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: |
-        cd Native
-        make
-        tree
-    condition: eq( variables['Agent.OS'], 'Linux' )
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          cd Native
+          make
+          tree
+      condition: eq( variables['Agent.OS'], 'Linux' )
 
-  - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      script: |
-        cd Native
-        $(ANDROID_NDK_PATH)/ndk-build
-    condition: eq( variables['Agent.JobName'], 'Job android' )
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          cd Native
+          $(ANDROID_NDK_PATH)/ndk-build
+      condition: eq( variables['Agent.JobName'], 'Job android' )
 
-  - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      script: 'tree /F /A'
-      errorActionPreference: 'continue'
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'tree /F /A'
+        errorActionPreference: 'continue'
 
-  - task: CopyFiles@2
-    inputs:
-      SourceFolder: '$(sourceFolder)'
-      Contents: '$(sourceFile)'
-      TargetFolder: '$(Build.ArtifactStagingDirectory)'
-      CleanTargetFolder: true
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(sourceFolder)'
+        Contents: '$(sourceFile)'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        CleanTargetFolder: true
 
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: '$(artifactName)'
-      publishLocation: 'Container'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: '$(artifactName)'
+        publishLocation: 'Container'
