@@ -129,14 +129,7 @@ stages:
       inputs:
         buildType: 'current'
         artifactName: 'android_ARMv7'
-        targetPath: 'CSharp/runtimes/linux-x64/native'
-    - task: DownloadBuildArtifacts@1
-      inputs:
-        buildType: 'current'
-        downloadType: 'single'
-        artifactName: 'linux_x64'
-        itemPattern: '**'
-        downloadPath: 'CSharp/runtimes/android-ar/native'
+        targetPath: 'CSharp/runtimes/android-arm/native'
 
     - task: VSBuild@1
       inputs:
