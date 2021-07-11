@@ -9,7 +9,7 @@ trigger:
 stages:
 - stage: BuildNative
   jobs:
-  - job: Build
+  - job: Native
     strategy:
       matrix:
         windows:
@@ -41,7 +41,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: 'choco install ninja'
-      condition: eq( variables['Agent.JobName'], 'Job android' )
+      condition: eq( variables['Agent.JobName'], 'Native android' )
 
     - task: CMake@1
       inputs:
@@ -55,7 +55,7 @@ stages:
         platform: 'x64'
         configuration: 'Release'
         msbuildArchitecture: 'x64'
-      condition: eq( variables['Agent.JobName'], 'Job windows' )
+      condition: eq( variables['Agent.JobName'], 'Native windows' )
 
     - task: Bash@3
       inputs:
@@ -72,7 +72,7 @@ stages:
         script: |
           cd Native
           $(ANDROID_NDK_PATH)/ndk-build
-      condition: eq( variables['Agent.JobName'], 'Job android' )
+      condition: eq( variables['Agent.JobName'], 'Native android' )
 
     - task: PowerShell@2
       inputs:
@@ -92,3 +92,32 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: '$(artifactName)'
         publishLocation: 'Container'
+
+- stage: BuildManaged
+  jobs:
+  - job: Managed
+    pool:
+      vmImage: 'windows-latest'
+    
+    steps:
+    - task: VSBuild@1
+      inputs:
+        solution: 'CSharp\Mikktspace.NET.sln'
+        platform: 'any cpu'
+        configuration: 'Release'
+        msbuildArchitecture: 'x64'
+
+    - task: NuGetCommand@2
+      inputs:
+        command: 'pack'
+        packagesToPack: 'CSharp/Mikktspace.NET.csproj'
+        configuration: 'Release'
+        versioningScheme: 'off'
+        
+    - task: NuGetCommand@2
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+        nuGetFeedType: 'internal'
+        publishVstsFeed: 'd04c348e-3752-477f-9659-fb7b72738d76/951cbf21-f9fe-4ddf-835a-1992fcbc702b'
+
