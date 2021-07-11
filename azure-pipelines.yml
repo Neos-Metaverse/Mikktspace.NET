@@ -104,7 +104,7 @@ stages:
 
     - task: NuGetCommand@2
       inputs:
-        restoreSolution: '$(solution)'
+        restoreSolution: 'CSharp\Mikktspace.NET.sln'
 
     - task: VSBuild@1
       inputs:
