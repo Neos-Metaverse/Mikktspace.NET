@@ -51,11 +51,6 @@ steps:
     msbuildArchitecture: 'x64'
   condition: eq( variables['Agent.JobName'], 'Job windows' )
 
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: 'tree /F /A'
-    errorActionPreference: 'continue'
 - task: Bash@3
   inputs:
     targetType: 'inline'
@@ -72,6 +67,12 @@ steps:
       cd Native
       $(ANDROID_NDK_PATH)/ndk-build
   condition: eq( variables['Agent.JobName'], 'Job android' )
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: 'tree /F /A'
+    errorActionPreference: 'continue'
 
 - task: CopyFiles@2
   inputs:
