@@ -70,7 +70,7 @@ steps:
     targetType: 'inline'
     script: |
       cd Native
-      ndk-build
+      $(ANDROID_NDK_PATH)/ndk-build
   condition: eq( variables['Agent.JobName'], 'Job android' )
 
 - task: CopyFiles@2
