@@ -14,15 +14,18 @@ strategy:
      buildSystem : 'CMAKE'
      sourceFolder: 'Native/Release'
      sourceFile: 'mikktspace.dll'
+     artifactName : 'windows_x64'
    linux:
      imageName: 'ubuntu-latest'
      cmakeArgs: ''
      buildSystem : 'CMAKE'
      sourceFolder: 'Native/'
      sourceFile: 'libmikktspace.so'
+     artifactName : 'linux_x64'
    android:
      imageName: 'windows-latest'
      buildSystem : 'JNI'
+     artifactName : 'android_ARMv7'
 
 pool:
   vmImage: $(imageName)
@@ -61,6 +64,14 @@ steps:
       make
       tree
   condition: eq( variables['Agent.OS'], 'Linux' )
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      cd Native
+      ndk-build
+  condition: eq( variables['Agent.JobName'], 'Job android' )
 
 - task: CopyFiles@2
   inputs:
