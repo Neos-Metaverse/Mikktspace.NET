@@ -25,6 +25,8 @@ strategy:
    android:
      imageName: 'windows-latest'
      buildSystem : 'JNI'
+     sourceFolder : 'Native/libs/armeabi-v7a'
+     sourceFile: 'libmikktspace.so'
      artifactName : 'android_ARMv7'
 
 pool:
