@@ -91,8 +91,8 @@ stages:
       inputs:
         targetType: 'inline'
         script: |
-          cd $(Build.ArtifactStagingDirectory)
-          tree /F /A'
+          cd "$(Build.ArtifactStagingDirectory)"
+          tree /F /A
 
     - task: PublishBuildArtifacts@1
       inputs:
